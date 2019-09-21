@@ -19,3 +19,5 @@ class Propagator:
         self.MatrixSetup()
         psi = linalg.spsolve(self.M,np.dot(self.Mp,psi0))
         return psi
+
+#A TEST CHANGE
