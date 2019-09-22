@@ -1,17 +1,20 @@
 import numpy as np
-from scipy import linalg
+from scipy.sparse import linalg
 
 class Propagator:
     '''Propagate from psi1, in the time t, to psi2, in time t +dt.
        Solves the equation M*psi2 = Mp*psi1 given by the Crank-Nicolson
        Method and returns the propagated Wave Function'''
 
-    def __init__(self, H, dt, N):
+    def __init__(self, H, N,dt):
         self.H = H.H
-        self.dt = dt
         self.N = N
+        self.dt = dt
 
-    def MatrixSetup(self):
+        self.MatrixSetup()
+
+    def MatrixSetup(self,t=0):
+
         self.M = np.identity(self.N)+1j*self.H*(self.dt)/2
         self.Mp = np.identity(self.N)-1j*self.H*(self.dt)/2
 
