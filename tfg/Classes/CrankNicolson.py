@@ -13,12 +13,16 @@ class Propagator:
 
         self.MatrixSetup()
 
-    def MatrixSetup(self,t=0):
-
-        self.M = np.identity(self.N)+1j*self.H*(self.dt)/2
-        self.Mp = np.identity(self.N)-1j*self.H*(self.dt)/2
+    def MatrixSetup(self,H=0):
+        if type(H) == int:
+            H = self.H
+        self.M = np.identity(self.N)+1j*H*(self.dt)/2
+        self.Mp = np.identity(self.N)-1j*H*(self.dt)/2
 
     def Propagate(self, psi0):
         self.MatrixSetup()
         psi = linalg.spsolve(self.M,np.dot(self.Mp,psi0))
         return psi
+
+    def Update(self,H):
+        self.H = H.H

@@ -1,31 +1,43 @@
 import numpy as np
 #import potential
+from Classes import EMField
 c = 137.04
 
 class H:
-    def __init__(self,grid,N,h):
+    def __init__(self,grid,N,h,t,ABool = True,VBool = True):
         self.N = N
         self.H = np.zeros((N,N),dtype="complex")
         self.h = h
         self.x = grid
-
+        self.t = t
+        if ABool == True:
+            self.A = self.A()
+        else:
+            self.A = np.zeros(len(self.t))
+        if VBool == True:
+            self.V = self.V()
+        else:
+            self.V = np.zeros(len(self.x))
         self.MatrixSetup()
 
     def V(self):
         V = -1/(np.sqrt(np.power(self.x,2)+1))
         return V
 
-    def A(self,t):
-        return 1000
+    def A(self):
+        EM = EMField.EMField(200,0.63,10,10,-100,5)
+        a = np.zeros(len(self.t))
+        for i in range(len(self.t)):
+            a[i] = EM.A(self.t[i])
+        return a #EM.A(t)
 
-    def MatrixSetup(self,t=0):
-        V = self.V()
+    def MatrixSetup(self,j=0):
         #V = 0
         for i in range(self.N):
             try:
-                self.H[i,i] = 1/self.h**2 #+ V[i]
-                self.H[i,abs(i-1)] = -1/(2*self.h**2)+1j/(2*self.h*c)*self.A(t)
-                self.H[i,abs(i+1)] = -1/(2*self.h**2)-1j/(2*self.h*c)*self.A(t)
+                self.H[i,i] = 1/self.h**2 + self.V[i]
+                self.H[i,abs(i-1)] = -1/(2*self.h**2)+1j/(2*self.h*c)*self.A[j]
+                self.H[i,abs(i+1)] = -1/(2*self.h**2)-1j/(2*self.h*c)*self.A[j]
             except:
                 pass
 
@@ -42,5 +54,5 @@ class H:
 
         return ab
 
-    def Update(self,t):
-        self.MatrixSetup(t)
+    def Update(self,j):
+        self.MatrixSetup(j)

@@ -19,4 +19,4 @@ class EMField:
 
     def A(self,t):
         #Vector potential as A(t) = -int(E(t)dt) from t=0 to t
-        return -integrate.romberg(self.E, self.tinf, t) #Añadir el tiempo de comienzo
+        return -integrate.romberg(self.E, self.tinf, t, divmax=20) #Añadir el tiempo de comienzo
