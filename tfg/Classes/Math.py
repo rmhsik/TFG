@@ -54,7 +54,7 @@ def EigenEnergy(psi,H,x):
     #   and the eigenfunction, aka wavefunction
     ##################################################
 
-    integ = np.conjugate(psi)*np.dot(H,psi)
+    integ = np.conjugate(psi)*np.dot(H.H,psi)
     return integrate.simps(integ,x)
 
 def Norm(psi,x):

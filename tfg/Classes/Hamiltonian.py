@@ -14,6 +14,7 @@ class H:
             self.A = self.A()
         else:
             self.A = np.zeros(len(self.t))
+
         if VBool == True:
             self.V = self.V()
         else:
@@ -25,10 +26,12 @@ class H:
         return V
 
     def A(self):
-        EM = EMField.EMField(200,0.63,10,10,-100,5)
+        EM = EMField.EMField(2000,1,5,10,-100,5)
         a = np.zeros(len(self.t))
+        print("Calculando el potencial vector...")
         for i in range(len(self.t)):
             a[i] = EM.A(self.t[i])
+        print("potencial vector calculado!")
         return a #EM.A(t)
 
     def MatrixSetup(self,j=0):

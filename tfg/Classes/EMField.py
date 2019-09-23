@@ -9,6 +9,7 @@ class EMField:
         self.w = w
         self.t0 = t0
         self.tinf = tinf
+        
     def f(self,t):
         #Envelope function from https://doi.org/10.1016/j.physletb.2013.09.014
         return np.exp(-np.power((t-self.t0)/self.tau,2*self.m))
