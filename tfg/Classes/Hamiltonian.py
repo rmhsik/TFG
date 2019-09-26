@@ -26,7 +26,7 @@ class H:
         return V
 
     def A(self):
-        EM = EMField.EMField(2000,1,5,10,-100,5)
+        EM = EMField.EMField(200,0.63,10,5,-100,5)
         a = np.zeros(len(self.t))
         print("Calculando el potencial vector...")
         for i in range(len(self.t)):
