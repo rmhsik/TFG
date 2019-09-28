@@ -24,9 +24,5 @@ class Propagator:
         psi = linalg.spsolve(self.M,np.dot(self.Mp,psi0))
         return psi
 
-<<<<<<< HEAD
-#A TEST CHANGE
-=======
     def Update(self,H):
         self.H = H.H
->>>>>>> 24-09-2019
