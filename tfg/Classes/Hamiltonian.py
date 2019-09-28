@@ -4,12 +4,14 @@ from Classes import EMField
 c = 137.04
 
 class H:
-    def __init__(self,grid,N,h,t,ABool = True,VBool = True):
+    def __init__(self,grid,N,h,t, ABool = True, VBool = True, softening = 1.0):
         self.N = N
         self.H = np.zeros((N,N),dtype="complex")
         self.h = h
         self.x = grid
         self.t = t
+        self.soft = softening
+
         if ABool == True:
             self.A = self.A()
         else:
@@ -22,11 +24,11 @@ class H:
         self.MatrixSetup()
 
     def V(self):
-        V = -1/(np.sqrt(np.power(self.x,2)+1))
+        V = -1/(np.sqrt(np.power(self.x,2)+self.soft))
         return V
 
     def A(self):
-        EM = EMField.EMField(200,0.63,10,5,-100,5)
+        EM = EMField.EMField(0.067,0.057,110)
         a = np.zeros(len(self.t))
         print("Calculando el potencial vector...")
         for i in range(len(self.t)):
