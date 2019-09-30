@@ -11,6 +11,9 @@ class H:
         self.x = grid
         self.t = t
         self.soft = softening
+        self.amp =0.067
+        self.w = 0.057
+        self.tmax = 110
 
         if ABool == True:
             self.A = self.A()
@@ -21,6 +24,7 @@ class H:
             self.V = self.V()
         else:
             self.V = np.zeros(len(self.x))
+
         self.MatrixSetup()
 
     def V(self):
@@ -28,7 +32,7 @@ class H:
         return V
 
     def A(self):
-        EM = EMField.EMField(0.067,0.057,110)
+        EM = EMField.EMField(self.amp,self.w,self.tmax)
         a = np.zeros(len(self.t))
         print("Calculando el potencial vector...")
         for i in range(len(self.t)):
