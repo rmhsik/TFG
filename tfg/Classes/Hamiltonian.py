@@ -4,16 +4,17 @@ from Classes import EMField
 c = 137.04
 
 class H:
-    def __init__(self,grid,N,h,t, ABool = True, VBool = True, softening = 1.0):
+    def __init__(self,grid,N,h,t, ABool = True, VBool = True, softening = 1.0,
+                amp=0.067,w=0.057,tmax=110):
         self.N = N
         self.H = np.zeros((N,N),dtype="complex")
         self.h = h
         self.x = grid
         self.t = t
         self.soft = softening
-        self.amp =0.067
-        self.w = 0.057
-        self.tmax = 110
+        self.amp =amp
+        self.w = w
+        self.tmax = tmax
 
         if ABool == True:
             self.A = self.A()

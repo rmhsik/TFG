@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import sparse
 from scipy.sparse import linalg
 
 class Propagator:
@@ -21,7 +22,13 @@ class Propagator:
 
     def Propagate(self, psi0):
         self.MatrixSetup()
-        psi = linalg.spsolve(self.M,np.dot(self.Mp,psi0))
+        #BandedMatrix=np.zeros((3,self.N))
+        #BandedMatrix[0]=np.append(0,np.diag(self.M,k=1))
+        #BandedMatrix[1]=np.diag(self.M)
+        #BandedMatrix[2]=np.append(np.diag(self.M,k=1),0)
+        A = sparse.csc_matrix(self.M)
+        b =np.dot(self.Mp,psi0)
+        psi = linalg.spsolve(A,b)
         return psi
 
     def Update(self,H):
