@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import integrate
-from Functions import Math
+from . import Math
 
 def GroundState(H,Prop,psi0,x,delta):
     dt = -1j*0.01

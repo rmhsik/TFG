@@ -2,11 +2,11 @@
 # cython: language_level=3
 import numpy as np
 
-def TDMAsolver(double complex[:] a,
-               double complex[:] b, 
-               double complex[:] c,
+def TDMAsolver(double complex[:] c,
+               double complex[:] b,
+               double complex[:] a,
                double complex[:] d):
-    
+
     return cTDMAsolver(a,b,c,d)
 
 cdef double complex[:] cTDMAsolver(double complex[:] a,
@@ -22,16 +22,16 @@ cdef double complex[:] cTDMAsolver(double complex[:] a,
     cdef int it,il
     cdef double complex mc
     cdef double complex[:] ac,bc,cc,dc,xc
-    
+
     ac, bc, cc, dc = map(np.array, (a, b, c, d)) # copy arrays
     #ac = np.array(a)
     #bc = np.array(b)
     #cc = np.array(c)
     #dc = np.array(d)
-    
+
     for it in range(1, nf):
         mc = ac[it-1]/bc[it-1]
-        bc[it] = bc[it] - mc*cc[it-1] 
+        bc[it] = bc[it] - mc*cc[it-1]
         dc[it] = dc[it] - mc*dc[it-1]
 
     xc = bc

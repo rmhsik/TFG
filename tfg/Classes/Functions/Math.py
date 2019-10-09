@@ -1,5 +1,7 @@
 import numpy as np
 from scipy import integrate
+import pyximport; pyximport.install()
+from .TriDot import TriDot
 
 def derivate(f,x):
     df = np.zeros(np.shape(f))
@@ -54,7 +56,7 @@ def EigenEnergy(psi,H,x):
     #   and the eigenfunction, aka wavefunction
     ##################################################
 
-    integ = np.conjugate(psi)*np.dot(H.H,psi)
+    integ = np.conjugate(psi)*(TriDot(H.H[0],H.H[1],H.H[2],psi))
     return integrate.simps(integ,x)
 
 def Norm(psi,x):

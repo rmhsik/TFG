@@ -1,6 +1,8 @@
 import numpy as np
 from scipy import integrate
-from Functions import Math
+import pyximport; pyximport.install()
+from .Functions import Math
+from .Functions.TriDot import TriDot
 
 class WF:
     def __init__(self,a,gridx,gridt,H,x0=0):
@@ -38,7 +40,7 @@ class WF:
         return integrate.simps(self.P(),self.x)
 
     def Energy(self):
-        integ = np.conjugate(self.psi)*np.dot(self.H.H,self.psi)
+        integ = np.conjugate(self.psi)*TriDot(self.H.H[0],self.H.H[1],self.H.H[2],self.psi)
         return integrate.simps(integ,self.x)
 
     def aExpected(self):

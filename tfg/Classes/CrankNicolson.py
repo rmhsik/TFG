@@ -1,6 +1,9 @@
 import numpy as np
+import pyximport; pyximport.install()
+from .Functions.TDMAsolver import TDMAsolver
+from .Functions.TriDot import TriDot
 from scipy import sparse
-from scipy.sparse import linalg
+from scipy import linalg
 
 class Propagator:
     '''Propagate from psi1, in the time t, to psi2, in time t +dt.
@@ -11,14 +14,19 @@ class Propagator:
         self.H = H.H
         self.N = N
         self.dt = dt
-
+        self.M = [0,0,0]
+        self.Mp = [0,0,0]
         self.MatrixSetup()
 
-    def MatrixSetup(self,H=0):
-        if type(H) == int:
-            H = self.H
-        self.M = np.identity(self.N)+1j*H*(self.dt)/2
-        self.Mp = np.identity(self.N)-1j*H*(self.dt)/2
+    def MatrixSetup(self):
+
+        self.M[0] = np.zeros(self.N-1)+1j*self.H[0]*(self.dt)/2
+        self.M[1] = np.ones(self.N)+1j*self.H[1]*(self.dt)/2
+        self.M[2] = np.zeros(self.N-1)+1j*self.H[2]*(self.dt)/2
+
+        self.Mp[0] = np.zeros(self.N-1)-1j*self.H[0]*(self.dt)/2
+        self.Mp[1] = np.ones(self.N)-1j*self.H[1]*(self.dt)/2
+        self.Mp[2] = np.zeros(self.N-1)-1j*self.H[2]*(self.dt)/2
 
     def Propagate(self, psi0):
         self.MatrixSetup()
@@ -26,9 +34,11 @@ class Propagator:
         #BandedMatrix[0]=np.append(0,np.diag(self.M,k=1))
         #BandedMatrix[1]=np.diag(self.M)
         #BandedMatrix[2]=np.append(np.diag(self.M,k=1),0)
-        A = sparse.csc_matrix(self.M)
-        b =np.dot(self.Mp,psi0)
-        psi = linalg.spsolve(A,b)
+        A = self.M
+        b = TriDot(self.Mp[0],self.Mp[1],self.Mp[2],psi0)
+        #A = sparse.diags([self.M[1],self.M[0],self.M[2]],[0,1,-1]).toarray()
+        psi = TDMAsolver(A[0],A[1],A[2],b)
+        #psi = linalg.solve(A,b)
         return psi
 
     def Update(self,H):
