@@ -4,3 +4,5 @@
 __pycache__/
 Junk/
 venv
+*.db
+*.npy
