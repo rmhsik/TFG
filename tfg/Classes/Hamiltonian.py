@@ -4,7 +4,7 @@ from Classes import EMField
 c = 137.04
 
 class H:
-    def __init__(self,grid,N,h,t, ABool = True, VBool = True, softening = 2.0,
+    def __init__(self,grid,N,h,t, ABool = True, V = 1, softening = 2.0, R=0.0,
                 amp=0.067,w=0.057,tmax=110):
         self.N = N
         self.H = [0,0,0]
@@ -15,21 +15,28 @@ class H:
         self.amp =amp
         self.w = w
         self.tmax = tmax
-
+        self.R = R
         if ABool == True:
             self.A = self.A()
         else:
             self.A = np.zeros(len(self.t))
 
-        if VBool == True:
-            self.V = self.V()
-        else:
+        if V == 1:
+            self.V = self.V1()
+        elif V == 0:
             self.V = np.zeros(len(self.x))
-
+        elif V == 2:
+            self.V = self.V2()
         self.MatrixSetup()
 
-    def V(self):
+    def V1(self):
         V = -1/(np.sqrt(np.power(self.x,2)+self.soft))
+        return V
+
+    def V2(self):
+        xa = -self.R/2
+        xb = self.R/2
+        V = -1/(np.sqrt(np.power(self.x-xa,2)+self.soft))-1/(np.sqrt(np.power(self.x-xb,2)+self.soft))
         return V
 
     def A(self):
