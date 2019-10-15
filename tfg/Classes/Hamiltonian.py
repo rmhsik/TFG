@@ -4,12 +4,12 @@ from Classes import EMField
 c = 137.04
 
 class H:
-    def __init__(self,grid,N,h,t, ABool = True, V = 1, softening = 2.0, R=0.0,
+    def __init__(self,x,N,h,t, ABool = True, V = 1, softening = 2.0, R=0.0,
                 amp=0.067,w=0.057,tmax=110):
         self.N = N
         self.H = [0,0,0]
         self.h = h
-        self.x = grid
+        self.x = x
         self.t = t
         self.soft = softening
         self.amp =amp
