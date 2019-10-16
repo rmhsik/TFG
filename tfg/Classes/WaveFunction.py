@@ -41,7 +41,8 @@ class WF:
 
         self.Mask()
         #self.HamSetUp()
-        self.GroundState()
+        if self.Vsel != 0:
+            self.GroundState()
         self.psi=self.WaveFunction()
 
     def WaveFunction(self):
@@ -92,16 +93,16 @@ class WF:
 
     def GroundState(self):
         H = Ham(x = self.x,
-              N = self.Nx,
-              h = self.h,
-              t= self.t,
-              V = self.Vsel,
-              ABool = False,
-              R = self.R,
-              softening = self.softening,
-              tmax = self.tmax,
-              amp = self.amp,
-              w = self.w)
+                N = self.Nx,
+                h = self.h,
+                t= self.t,
+                V = self.Vsel,
+                ABool = False,
+                R = self.R,
+                softening = self.softening,
+                tmax = self.tmax,
+                amp = self.amp,
+                w = self.w)
 
         psi = self.WaveFunction()
         Prop = Propagator(H,self.Nx,self.dt)
@@ -112,9 +113,28 @@ class WF:
         return
 
     def Evolution(self):
+        self.HamSetUp()
+        self.psi = self.psiG
+        Prop = Propagator(self.H,self.Nx,self.dt)
+        self.PsiArray=np.zeros((self.Nt,self.Nx)).astype(complex)
 
-        Prop = CrankNicolson.Propagator(self.H,self.Nx,self.dt)
-        a = np.real(H.H[0])
-        b = np.real(H.H[1])
-        c = H.H[2]
-        w, v = linalg.eigh_tridiagonal(b,a,select='v',select_range=[-np.inf,0],check_finite=False)
+        for i in range(self.Nt):
+            self.H.Update(i)
+            Prop.Update(self.H)
+            self.PsiArray[i] = self.psi
+            self.psi = self.mask*Prop.Propagate(self.psi)
+            #self.psi = self.psi/Math.Norm(self.psi,self.x)
+        return
+
+    def HarmonicGen(self):
+        aArray = np.zeros(self.Nt).astype(complex)
+        for i in range(len(self.PsiArray)):
+            self.psi = self.PsiArray[i]
+            aArray[i] = (self.aExpected())
+
+        fourier = np.fft.fft(aArray)
+        self.Y = np.conjugate(fourier)*fourier
+        self.freq = np.fft.fftfreq(len(fourier))*len(fourier)*(2*np.pi/(self.dt*self.Nt))/self.H.w
+         #https://stackoverflow.com/questions/3694918/how-to-extract-frequency-associated-with-fft-values-in-python
+
+        return (self.Y,self.freq)

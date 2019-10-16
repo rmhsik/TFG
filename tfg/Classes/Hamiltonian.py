@@ -1,6 +1,9 @@
 import numpy as np
 #import potential
 from Classes import EMField
+from scipy.linalg.lapack import zheev
+import pyximport; pyximport.install()
+from .Functions import Diag2Matrix
 c = 137.04
 
 class H:
@@ -36,6 +39,7 @@ class H:
     def V2(self):
         xa = -self.R/2
         xb = self.R/2
+
         V = -1/(np.sqrt(np.power(self.x-xa,2)+self.soft))-1/(np.sqrt(np.power(self.x-xb,2)+self.soft))
         return V
 
@@ -62,18 +66,10 @@ class H:
         self.H[2] = (-1/(2*self.h**2)-1j/(2*self.h*c)*self.A[j])*np.ones(self.N-1)
         #return [u,d,l]
 
-    #def BandedMatrix(self):
-    #    V = self.V()
-    #    d = 1/self.h**2 + V
-    #    u = -1/(2*self.h**2)*np.ones(self.N-1)
-    #    l = -1/(2*self.h**2)*np.ones(self.N-1)
-#
-    #    ab = np.zeros((3,self.N))
-    #    ab[0] = np.append([0],u)
-    #    ab[1] = d
-    #    ab[2] = np.append(l,[0])
-    #
-    #    return ab
-
+    def EigenStates(self,s=0):
+        self.Matrix = Diag2Matrix.Diag2Matrix(self.H[0],
+                                         self.H[1],
+                                         self.H[2])
+        #self.w,self.v = zheev(Matrix)
     def Update(self,j):
         self.MatrixSetup(j)
