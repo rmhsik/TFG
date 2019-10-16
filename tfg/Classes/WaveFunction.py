@@ -126,7 +126,7 @@ class WF:
             #self.psi = self.psi/Math.Norm(self.psi,self.x)
         return
 
-    def HarmonicGen(self):
+    def HarmonicSpectra(self):
         aArray = np.zeros(self.Nt).astype(complex)
         for i in range(len(self.PsiArray)):
             self.psi = self.PsiArray[i]
