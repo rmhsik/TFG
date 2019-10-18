@@ -36,7 +36,7 @@ class EMField:
     def A(self,t):
         #Vector potential as A(t) = -int(E(t)dt) from t=0 to t
         #try:
-        return -c*integrate.romberg(self.E,0.0,t,divmax=15)
+        return -c*integrate.romberg(self.E,0.0,t,divmax=10)
         #except:
             #print("exception encountered!!")
             #pass

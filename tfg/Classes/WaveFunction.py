@@ -2,6 +2,7 @@ import numpy as np
 from .CrankNicolson import Propagator
 from .Hamiltonian import H as Ham
 from .Functions.GroundState import GroundState
+from Classes import EMField
 from scipy import integrate
 import pyximport; pyximport.install()
 from .Functions import Math
@@ -33,16 +34,19 @@ class WF:
 
         self.softening  = self.dict["softening"]
         self.R          = self.dict["R"]
-        self.ABool      = self.dict["Abool"]
+        #self.ABool      = self.dict["Abool"]
         self.Vsel       = self.dict["Vsel"]
 
         self.amp        = self.dict["amp"]
         self.w          = self.dict["w"]
 
         self.Mask()
+        self.Acalc()
+
         #self.HamSetUp()
         if self.Vsel != 0:
             self.GroundState()
+
         self.psi=self.WaveFunction()
 
     def WaveFunction(self):
@@ -50,6 +54,14 @@ class WF:
         C = Math.Norm(psi,self.x)
         return psi.astype(complex)/C
 
+    def Acalc(self):
+        EM = EMField.EMField(self.amp,self.w,self.tmax)
+        a = np.zeros(len(self.t))
+        print("Calculando el potencial vector...")
+        for i in range(len(self.t)):
+            a[i] = EM.A(self.t[i])
+        print("potencial vector calculado!")
+        self.A = a
 
     def Mask(self):
         self.mask = np.ones(len(self.x),dtype='float')
@@ -68,7 +80,7 @@ class WF:
                                h = self.h,
                                t= self.t,
                                V = self.Vsel,
-                               ABool = self.ABool,
+                               A = self.A,
                                R = self.R,
                                softening = self.softening,
                                tmax = self.tmax,
@@ -97,7 +109,7 @@ class WF:
                 h = self.h,
                 t= self.t,
                 V = self.Vsel,
-                ABool = False,
+                A = self.A,
                 R = self.R,
                 softening = self.softening,
                 tmax = self.tmax,
