@@ -3,7 +3,7 @@ from .CrankNicolson import Propagator
 from .Hamiltonian import H as Ham
 from .Functions.GroundState import GroundState
 from Classes import EMField
-from scipy import integrate
+from scipy import integrate,fftpack
 import pyximport; pyximport.install()
 from .Functions import Math
 from .Functions.TriDot import TriDot
@@ -149,4 +149,4 @@ class WF:
         self.freq = np.fft.fftfreq(len(fourier))*len(fourier)*(2*np.pi/(self.dt*self.Nt))/self.H.w
          #https://stackoverflow.com/questions/3694918/how-to-extract-frequency-associated-with-fft-values-in-python
 
-        return (self.Y,self.freq)
+        return (fftpack.fftshift(self.Y),fftpack.fftshift(self.freq))
